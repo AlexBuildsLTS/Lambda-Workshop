@@ -17,7 +17,7 @@ public class Person {
         this.gender = gender;
     }
 
-    // Getters and setters
+
     public int getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
