@@ -1,104 +1,112 @@
 package se.alex.lexicon;
 
+import se.alex.lexicon.data.DataStorage;
+import se.alex.lexicon.model.Gender;
+import se.alex.lexicon.model.Person;
+
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Comparator;
 
 public class Exercises {
-    public static void main(String[] args) {
-        List<Person> persons = Arrays.asList(
-                new Person(123, "Erik", "Eriksson", LocalDate.parse("2000-01-01"), "Male"),
-                new Person(124, "Anna", "Andersson", LocalDate.parse("1990-05-12"), "Female"),
-                new Person(125, "Nisse", "Nilsson", LocalDate.parse("1999-09-09"), "Male"),
-                new Person(126, "Ulf", "Ulsson", LocalDate.parse("1980-07-22"), "Male"),
-                new Person(456, "Nisse", "Nilsson", LocalDate.parse("1999-09-09"), "Male")
-        );
 
-        DataStorageImpl storage = new DataStorageImpl(persons);
+    private static final DataStorage STORAGE = DataStorage.INSTANCE;
 
-        // Exercise 1
-        List<Person> erik = storage.findMany(p -> p.getFirstName().equals("Erik"));
-        erik.forEach(System.out::println);
+    public static void exercise1(String message) {
+        System.out.println(message);
+        STORAGE.findMany(p -> p.getFirstName().equals("Erik"))
+                .forEach(System.out::println);
+    }
 
-        // Exercise 2
-        List<Person> females = storage.findMany(p -> p.getGender().equalsIgnoreCase("female"));
-        females.forEach(System.out::println);
+    public static void exercise2(String message) {
+        System.out.println(message);
+        STORAGE.findMany(p -> p.getGender() == Gender.FEMALE)
+                .forEach(System.out::println);
+    }
 
-        // Exercise 3
-        List<Person> bornAfter2000 = storage.findMany(p -> p.getBirthDate().isAfter(LocalDate.of(1999, 12, 31)));
-        bornAfter2000.forEach(System.out::println);
+    public static void exercise3(String message) {
+        System.out.println(message);
+        STORAGE.findMany(p -> p.getBirthDate().isAfter(LocalDate.of(1999, 12, 31)))
+                .forEach(System.out::println);
+    }
 
-        // Exercise 4
-        Person person123 = storage.findOne(p -> p.getId() == 123);
-        System.out.println(person123);
+    public static void exercise4(String message) {
+        System.out.println(message);
+        Person person = STORAGE.findOne(p -> p.getId() == 123);
+        System.out.println(person);
+    }
 
-        // Exercise 5
-        String person456 = storage.findOneAndMapToString(
+    public static void exercise5(String message) {
+        System.out.println(message);
+        String personStr = STORAGE.findOneAndMapToString(
                 p -> p.getId() == 456,
                 p -> "Name: " + p.getFirstName() + " " + p.getLastName() + " born " + p.getBirthDate()
         );
-        System.out.println(person456);
+        System.out.println(personStr);
+    }
 
-        // Exercise 6
-        List<String> malesStartingWithE = storage.findManyAndMapEachToString(
-                p -> p.getGender().equalsIgnoreCase("Male") && p.getFirstName().startsWith("E"),
+    public static void exercise6(String message) {
+        System.out.println(message);
+        STORAGE.findManyAndMapEachToString(
+                p -> p.getGender() == Gender.MALE && p.getFirstName().startsWith("E"),
                 p -> p.getFirstName() + " " + p.getLastName()
-        );
-        malesStartingWithE.forEach(System.out::println);
+        ).forEach(System.out::println);
+    }
 
-        // Exercise 7
-        List<String> belowAge10 = storage.findManyAndMapEachToString(
-                p -> p.getBirthDate().isAfter(LocalDate.now().minusYears(10)),
-                p -> p.getFirstName() + " " + p.getLastName() + " " + (LocalDate.now().getYear() - p.getBirthDate().getYear()) + " years"
-        );
-        belowAge10.forEach(System.out::println);
+    public static void exercise7(String message) {
+        System.out.println(message);
+        STORAGE.findManyAndMapEachToString(
+                p -> p.getAge() < 10,
+                p -> p.getFirstName() + " " + p.getLastName() + " " + p.getAge() + " years"
+        ).forEach(System.out::println);
+    }
 
-        // Exercise 8
-        storage.findAndDo(
-                p -> p.getFirstName().equals("Ulf"),
-                p -> System.out.println(p)
+    public static void exercise8(String message) {
+        System.out.println(message);
+        STORAGE.findAndDo(
+                p -> p.getFirstName().equalsIgnoreCase("Ulf"),
+                System.out::println
         );
+    }
 
-        // Exercise 9
-        storage.findAndDo(
+    public static void exercise9(String message) {
+        System.out.println(message);
+        STORAGE.findAndDo(
                 p -> p.getLastName().contains(p.getFirstName()),
-                p -> System.out.println(p)
+                System.out::println
         );
+    }
 
-        // Exercise 10
-        storage.findAndDo(
-                p -> new StringBuilder(p.getFirstName()).reverse().toString().equals(p.getFirstName()),
+    public static void exercise10(String message) {
+        System.out.println(message);
+        STORAGE.findAndDo(
+                p -> new StringBuilder(p.getFirstName()).reverse().toString().equalsIgnoreCase(p.getFirstName()),
                 p -> System.out.println(p.getFirstName() + " " + p.getLastName())
         );
+    }
 
-        // Exercise 11
-        List<Person> startsWithA = storage.findAndSort(
+    public static void exercise11(String message) {
+        System.out.println(message);
+        STORAGE.findAndSort(
                 p -> p.getFirstName().startsWith("A"),
-                list -> list.stream().sorted((p1, p2) -> p1.getBirthDate().compareTo(p2.getBirthDate())).collect(Collectors.toList())
-        );
-        startsWithA.forEach(System.out::println);
+                Comparator.comparing(Person::getBirthDate)
+        ).forEach(System.out::println);
+    }
 
-        // Exercise 12
-        List<Person> bornBefore1950 = storage.findAndSort(
+    public static void exercise12(String message) {
+        System.out.println(message);
+        STORAGE.findAndSort(
                 p -> p.getBirthDate().isBefore(LocalDate.of(1950, 1, 1)),
-                list -> list.stream().sorted((p1, p2) -> p2.getBirthDate().compareTo(p1.getBirthDate())).collect(Collectors.toList())
-        );
-        bornBefore1950.forEach(System.out::println);
+                Comparator.comparing(Person::getBirthDate).reversed()
+        ).forEach(System.out::println);
+    }
 
-        // Exercise 13
-        List<Person> sortedByLastNameFirstNameBirthdate = storage.findAndSort(
+    public static void exercise13(String message) {
+        System.out.println(message);
+        STORAGE.findAndSort(
                 p -> true,
-                list -> list.stream()
-                        .sorted((p1, p2) -> {
-                            int lastNameComparison = p1.getLastName().compareTo(p2.getLastName());
-                            if (lastNameComparison != 0) return lastNameComparison;
-                            int firstNameComparison = p1.getFirstName().compareTo(p2.getFirstName());
-                            if (firstNameComparison != 0) return firstNameComparison;
-                            return p1.getBirthDate().compareTo(p2.getBirthDate());
-                        })
-                        .collect(Collectors.toList())
-        );
-        sortedByLastNameFirstNameBirthdate.forEach(System.out::println);
+                Comparator.comparing(Person::getLastName)
+                        .thenComparing(Person::getFirstName)
+                        .thenComparing(Person::getBirthDate)
+        ).forEach(System.out::println);
     }
 }
