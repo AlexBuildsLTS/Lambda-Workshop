@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class Exercises {
     public static void main(String[] args) {
         List<Person> persons = Arrays.asList(
@@ -14,7 +13,6 @@ public class Exercises {
                 new Person(125, "Nisse", "Nilsson", LocalDate.parse("1999-09-09"), "Male"),
                 new Person(126, "Ulf", "Ulsson", LocalDate.parse("1980-07-22"), "Male"),
                 new Person(456, "Nisse", "Nilsson", LocalDate.parse("1999-09-09"), "Male")
-
         );
 
         DataStorageImpl storage = new DataStorageImpl(persons);
@@ -22,7 +20,6 @@ public class Exercises {
         // Exercise 1
         List<Person> erik = storage.findMany(p -> p.getFirstName().equals("Erik"));
         erik.forEach(System.out::println);
-
 
         // Exercise 2
         List<Person> females = storage.findMany(p -> p.getGender().equalsIgnoreCase("female"));
@@ -35,7 +32,8 @@ public class Exercises {
         // Exercise 4
         Person person123 = storage.findOne(p -> p.getId() == 123);
         System.out.println(person123);
-// Exercise 5
+
+        // Exercise 5
         String person456 = storage.findOneAndMapToString(
                 p -> p.getId() == 456,
                 p -> "Name: " + p.getFirstName() + " " + p.getLastName() + " born " + p.getBirthDate()
@@ -99,12 +97,8 @@ public class Exercises {
                             if (firstNameComparison != 0) return firstNameComparison;
                             return p1.getBirthDate().compareTo(p2.getBirthDate());
                         })
-                        .collect(Collectors.toList()) // Corrected
+                        .collect(Collectors.toList())
         );
         sortedByLastNameFirstNameBirthdate.forEach(System.out::println);
-
     }
-
-
 }
-
